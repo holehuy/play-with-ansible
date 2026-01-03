@@ -1,0 +1,42 @@
+- name: Add PHP repository
+  apt_repository:
+    repo: "{{ php_ppa }}"
+    state: present
+
+- name: Install PHP and extensions
+  apt:
+    name: "{{ php_packages }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure PHP-FPM is started and enabled
+  service:
+    name: "php{{ php_version }}-fpm"
+    state: started
+    enabled: yes
+
+- name: Check if Composer is already installed
+  stat:
+    path: "{{ composer_install_dir }}/{{ composer_filename }}"
+  register: composer_bin
+
+- name: Download Composer installer
+  get_url:
+    url: "{{ composer_download_url }}"
+    dest: /tmp/composer-setup.php
+    mode: '0644'
+  when: not composer_bin.stat.exists
+
+- name: Install Composer
+  command: >
+    php /tmp/composer-setup.php
+    --install-dir={{ composer_install_dir }}
+    --filename={{ composer_filename }}
+  args:
+    creates: "{{ composer_install_dir }}/{{ composer_filename }}"
+  when: not composer_bin.stat.exists
+
+- name: Remove Composer installer
+  file:
+    path: /tmp/composer-setup.php
+    state: absent

@@ -1,0 +1,37 @@
+- name: Create SonarQube directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0777"
+    owner: "{{ sonarqube_dir_owner }}"
+    group: "{{ sonarqube_dir_group }}"
+  loop:
+    - "{{ sonarqube_data_dir }}"
+    - "{{ sonarqube_extensions_dir }}"
+    - "{{ sonarqube_logs_dir }}"
+
+- name: Set ownership to SonarQube user (UID 1000)
+  file:
+    path: "{{ item }}"
+    owner: "1000"
+    group: "1000"
+    recurse: yes
+  loop:
+    - "{{ sonarqube_data_dir }}"
+    - "{{ sonarqube_extensions_dir }}"
+    - "{{ sonarqube_logs_dir }}"
+  ignore_errors: yes
+
+- name: Run SonarQube container
+  docker_container:
+    name: "{{ sonarqube_container_name }}"
+    image: "{{ sonarqube_image }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ sonarqube_http_port }}:9000"
+    volumes:
+      - "{{ sonarqube_data_dir }}:/opt/sonarqube/data"
+      - "{{ sonarqube_extensions_dir }}:/opt/sonarqube/extensions"
+      - "{{ sonarqube_logs_dir }}:/opt/sonarqube/logs"
+    user: "1000:1000"

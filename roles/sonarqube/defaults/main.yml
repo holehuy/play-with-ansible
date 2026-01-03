@@ -1,0 +1,16 @@
+---
+# SonarQube configuration
+sonarqube_container_name: "sonarqube"
+sonarqube_image: "sonarqube:9-community"
+sonarqube_base_dir: "/opt/sonarqube"
+sonarqube_http_port: "9000"
+
+# Directories
+sonarqube_data_dir: "{{ sonarqube_base_dir }}/data"
+sonarqube_extensions_dir: "{{ sonarqube_base_dir }}/extensions"
+sonarqube_logs_dir: "{{ sonarqube_base_dir }}/logs"
+
+# Directory permissions
+sonarqube_dir_mode: "0755"
+sonarqube_dir_owner: "root"
+sonarqube_dir_group: "root"

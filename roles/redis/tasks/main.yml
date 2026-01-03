@@ -1,0 +1,24 @@
+- name: Install Redis
+  apt:
+    name: redis-server
+    state: present
+
+- name: Configure Redis bind interface
+  lineinfile:
+    path: "{{ redis_config_file }}"
+    regexp: "^bind "
+    line: "bind {{ redis_bind_interface }}"
+  notify: restart redis
+
+- name: Enable supervised systemd
+  lineinfile:
+    path: "{{ redis_config_file }}"
+    regexp: "^supervised "
+    line: "supervised {{ redis_supervised }}"
+  notify: restart redis
+
+- name: Ensure Redis is started and enabled
+  service:
+    name: redis-server
+    state: started
+    enabled: yes

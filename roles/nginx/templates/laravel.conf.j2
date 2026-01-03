@@ -1,0 +1,20 @@
+server {
+    listen {{ nginx_listen_port }};
+    server_name {{ nginx_server_name }};
+    root {{ nginx_root_path }};
+
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass {{ nginx_php_fpm_socket }};
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}

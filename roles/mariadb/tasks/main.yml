@@ -1,0 +1,72 @@
+- name: Install MariaDB and dependencies
+  apt:
+    name:
+      - mariadb-server
+      - python3-pymysql
+    state: present
+    update_cache: yes
+
+- name: Start MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Check if .my.cnf exists
+  stat:
+    path: /root/.my.cnf
+  register: mycnf_file
+
+- name: Update MariaDB root password for all hosts
+  mysql_user:
+    name: root
+    password: "{{ mariadb_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    host: "{{ item }}"
+    priv: "*.*:ALL,GRANT"
+    state: present
+  loop:
+    - localhost
+    - 127.0.0.1
+    - ::1
+  when: not mycnf_file.stat.exists
+  no_log: true
+  ignore_errors: yes
+
+- name: Create .my.cnf file with root credentials
+  copy:
+    content: |
+      [client]
+      user=root
+      password={{ mariadb_root_password }}
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: '0600'
+  no_log: true
+
+- name: Remove anonymous users
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: mariadb_remove_anonymous_users | bool
+
+- name: Disallow root login remotely
+  mysql_query:
+    query: DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: mariadb_disallow_root_remote_login | bool
+
+- name: Remove test database
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: mariadb_remove_test_database | bool
+
+- name: Flush privileges
+  mysql_query:
+    query: FLUSH PRIVILEGES
+    login_unix_socket: /var/run/mysqld/mysqld.sock

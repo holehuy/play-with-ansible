@@ -1,0 +1,22 @@
+---
+# PHP version
+php_version: "8.2"
+
+# PHP PPA repository
+php_ppa: "ppa:ondrej/php"
+
+# PHP packages to install
+php_packages:
+  - "php{{ php_version }}-fpm"
+  - "php{{ php_version }}-cli"
+  - "php{{ php_version }}-mysql"
+  - "php{{ php_version }}-redis"
+  - "php{{ php_version }}-xml"
+  - "php{{ php_version }}-mbstring"
+  - "php{{ php_version }}-curl"
+  - "php{{ php_version }}-zip"
+
+# Composer installation
+composer_install_dir: "/usr/local/bin"
+composer_filename: "composer"
+composer_download_url: "https://getcomposer.org/installer"

@@ -1,0 +1,12 @@
+---
+# MariaDB root password - CHANGE THIS IN PRODUCTION!
+mariadb_root_password: "ChangeMe123!"
+
+# Database configuration
+mariadb_databases: []
+mariadb_users: []
+
+# Security settings
+mariadb_remove_anonymous_users: true
+mariadb_remove_test_database: true
+mariadb_disallow_root_remote_login: true

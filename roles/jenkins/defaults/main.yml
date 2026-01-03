@@ -1,0 +1,12 @@
+---
+# Jenkins configuration
+jenkins_container_name: "jenkins"
+jenkins_image: "jenkins/jenkins:lts-jdk17"
+jenkins_home_dir: "/opt/jenkins_home"
+jenkins_http_port: "8080"
+jenkins_agent_port: "50000"
+
+# Directory permissions
+jenkins_dir_mode: "0755"
+jenkins_dir_owner: "root"
+jenkins_dir_group: "root"

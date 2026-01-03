@@ -1,0 +1,12 @@
+---
+# Common packages to install
+common_packages:
+  - curl
+  - git
+  - unzip
+  - htop
+  - vim
+  - wget
+
+# Whether to perform dist upgrade (can be slow)
+common_dist_upgrade: true
