@@ -1,6 +1,6 @@
 ---
 # PHP version
-php_version: "8.2"
+php_version: "8.3"
 
 # PHP PPA repository
 php_ppa: "ppa:ondrej/php"

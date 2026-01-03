@@ -14,6 +14,7 @@ ansible/
     ├── docker/          # Docker & Docker Compose
     ├── nginx/           # Nginx web server
     ├── php/             # PHP-FPM & Composer
+    ├── nodejs/          # Node.js, npm & PM2
     ├── mariadb/         # MariaDB database
     ├── redis/           # Redis cache
     ├── jenkins/         # Jenkins CI/CD
@@ -42,19 +43,30 @@ prod ansible_host=YOUR_SERVER_IP ansible_user=YOUR_USER ansible_ssh_private_key_
 Each role has a `defaults/main.yml` file for customization:
 
 **MariaDB** ([roles/mariadb/defaults/main.yml](roles/mariadb/defaults/main.yml)):
+
 ```yaml
-mariadb_root_password: "YOUR_SECURE_PASSWORD"  # ⚠️ MUST CHANGE!
+mariadb_root_password: "YOUR_SECURE_PASSWORD" # ⚠️ MUST CHANGE!
 ```
 
 **PHP** ([roles/php/defaults/main.yml](roles/php/defaults/main.yml)):
+
 ```yaml
-php_version: "8.2"  # Change version if needed
+php_version: "8.3" # Change version if needed
 ```
 
 **Nginx** ([roles/nginx/defaults/main.yml](roles/nginx/defaults/main.yml)):
+
 ```yaml
-nginx_server_name: "example.com"  # Your domain
+nginx_server_name: "example.com" # Your domain
 nginx_root_path: "/var/www/laravel/public"
+```
+
+**Node.js** ([roles/nodejs/defaults/main.yml](roles/nodejs/defaults/main.yml)):
+
+```yaml
+nodejs_version: "22" # Node.js version
+npm_version: "11" # npm version
+pm2_install: true # Install PM2
 ```
 
 ## Usage
@@ -73,6 +85,9 @@ ansible-playbook site.yml --tags docker
 
 # Install Nginx and PHP only
 ansible-playbook site.yml --tags nginx,php
+
+# Install Node.js only
+ansible-playbook site.yml --tags nodejs
 
 # Install Jenkins only
 ansible-playbook site.yml --tags jenkins
@@ -94,25 +109,37 @@ ansible-playbook site.yml --check --diff
 ## Roles
 
 ### Common
+
 - Update & upgrade system
 - Install base packages: curl, git, unzip, htop, vim, wget
 
 ### Docker
+
 - Install Docker and Docker Compose
 - Add user to docker group
 - Auto-start Docker service
 
 ### Nginx
+
 - Install Nginx web server
 - Configure Laravel vhost
 - Remove default site
 
 ### PHP
-- Install PHP 8.2 (version can be changed)
+
+- Install PHP 8.3 (version can be changed)
 - Extensions: mysql, redis, xml, mbstring, curl, zip
 - Install Composer globally
 
+### Node.js
+
+- Install Node.js 22.x from NodeSource repository
+- Upgrade npm to version 11
+- Install PM2 globally for process management
+- Suitable for hosting Next.js, React, or other Node.js applications
+
 ### MariaDB
+
 - Install MariaDB server
 - Security hardening:
   - Set root password
@@ -121,16 +148,19 @@ ansible-playbook site.yml --check --diff
   - Remove test database
 
 ### Redis
+
 - Install Redis server
 - Configure bind to localhost only
 - Enable systemd supervision
 
 ### Jenkins
+
 - Run Jenkins in Docker container
 - Ports: 8080 (HTTP), 50000 (Agent)
 - Data: `/opt/jenkins_home`
 
 ### SonarQube
+
 - Run SonarQube in Docker container
 - Port: 9000
 - Data: `/opt/sonarqube/`
@@ -160,6 +190,7 @@ chmod 600 ~/.ssh/ansible.pem
 ## Troubleshooting
 
 ### Connection timeout
+
 ```bash
 # Test SSH connection
 ansible app -m ping
@@ -169,12 +200,14 @@ ansible app -m ping -vvv
 ```
 
 ### Permission denied
+
 ```bash
 # Check sudo access
 ansible app -m shell -a "sudo whoami" --become
 ```
 
 ### Role dependency issues
+
 ```bash
 # Re-run with force
 ansible-playbook site.yml --force-handlers

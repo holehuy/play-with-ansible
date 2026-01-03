@@ -5,6 +5,7 @@
     - { role: docker, tags: docker }
     - { role: nginx, tags: nginx }
     - { role: php, tags: php }
+    - { role: nodejs, tags: nodejs }
     - { role: mariadb, tags: mariadb }
     - { role: redis, tags: redis }
     - { role: jenkins, tags: jenkins }

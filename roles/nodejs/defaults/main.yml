@@ -1,0 +1,16 @@
+---
+# Node.js version
+nodejs_version: "22"
+
+# npm version (will be installed if current version is different)
+npm_version: "11"
+
+# PM2 installation
+pm2_install: true
+
+# NodeSource repository
+nodesource_repo_url: "https://deb.nodesource.com/setup_{{ nodejs_version }}.x"
+
+# Global npm packages to install
+nodejs_global_packages:
+  - pm2

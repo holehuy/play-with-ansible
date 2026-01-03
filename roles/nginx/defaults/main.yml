@@ -5,7 +5,7 @@ nginx_remove_default_site: true
 # Laravel site configuration
 nginx_server_name: "_"
 nginx_root_path: "/var/www/laravel/public"
-nginx_php_fpm_socket: "unix:/run/php/php8.2-fpm.sock"
+nginx_php_fpm_socket: "unix:/run/php/php8.3-fpm.sock"
 nginx_listen_port: 80
 
 # Site configuration
